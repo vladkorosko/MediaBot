@@ -1,0 +1,4 @@
+from .avi to .mp4
+
+1. ffmpeg -i {0} -vcodec mpeg4 {1}
+2. ffmpeg -i {0} -c:v mpeg4 -preset slow -crf 19 {1}
