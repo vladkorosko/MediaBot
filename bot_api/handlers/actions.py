@@ -4,6 +4,7 @@ from aiogram import types
 
 from photo_manager.puzzle_photo import puzzle_photo
 from photo_manager.crop_photo import crop_photo
+from photo_manager.resize_photo import resize_photo
 
 from bot_api.dispatcher import dp
 import bot_api.handlers.addion_functions as ad
@@ -31,7 +32,7 @@ async def handler_photo_message(msg):
             if ad.is_integer(command[1]) and ad.is_integer(command[2]) and ad.is_integer(command[3]) and ad.is_integer(
                     command[4]):
                 await msg.reply("Cropping")
-                name = "input_" + str(msg.from_id) + '_' + str(msg.message_id) + ".jpg"
+                name = "crop_" + str(msg.from_id) + '_' + str(msg.message_id) + ".jpg"
                 await msg.photo[-1].download(name)
                 error = crop_photo(name, int(command[1]), int(command[2]), int(command[3]), int(command[4]))
                 os.remove(name)
@@ -46,13 +47,28 @@ async def handler_photo_message(msg):
         elif command[0] == 'puzzle' and len(command) == 2:
             if ad.is_integer(command[1]):
                 await msg.reply("Making puzzle")
-                name = "input_" + str(msg.from_id) + '_' + str(msg.message_id) + ".jpg"
+                name = "puzzle_" + str(msg.from_id) + '_' + str(msg.message_id) + ".jpg"
                 await msg.photo[-1].download(name)
                 puzzle_photo(name, int(command[1]))
                 os.remove(name)
                 result = name[:-4:] + '_result.jpg'
                 await msg.reply_document(open(result, "rb"))
                 os.remove(result)
+            else:
+                await msg.reply('Command "PUZZLE": Wrong parameters')
+        elif command[0] == 'resize' and len(command) == 3:
+            if ad.is_integer(command[1]) and ad.is_integer(command[2]):
+                await msg.reply("Resizing")
+                name = "resize_" + str(msg.from_id) + '_' + str(msg.message_id) + ".jpg"
+                await msg.photo[-1].download(name)
+                error = resize_photo(name, int(command[1]), int(command[2]))
+                os.remove(name)
+                if error is None:
+                    result = name[:-4:] + '_result.jpg'
+                    await msg.reply_document(open(result, "rb"))
+                    os.remove(result)
+                else:
+                    await msg.reply(error)
             else:
                 await msg.reply('Command "PUZZLE": Wrong parameters')
         else:
