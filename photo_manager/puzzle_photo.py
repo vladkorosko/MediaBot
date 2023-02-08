@@ -1,11 +1,9 @@
-import os
 import random
 
 from PIL import Image
 
 
 def puzzle_photo(file_path, parts):
-    name, ext = os.path.splitext(file_path)
     img = Image.open(file_path)
     w, h = img.size
 
@@ -33,7 +31,5 @@ def puzzle_photo(file_path, parts):
         for j in range(parts):
             box = (int(i * part_w), int(j * part_h), int((i + 1) * part_w), int((j + 1) * part_h))
             new_im.paste(table[i*parts + j], box)
-
     result = file_path[:-4:] + "_result.jpg"
     new_im.save(result)
-
