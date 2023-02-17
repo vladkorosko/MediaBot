@@ -9,6 +9,8 @@ from photo_manager.resize_photo import resize_photo
 from bot_api.dispatcher import dp
 import bot_api.handlers.addion_functions as ad
 
+from get_extension import get_format as gf
+
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(msg: types.Message):
@@ -18,7 +20,7 @@ async def send_welcome(msg: types.Message):
 
     markup.add(button_photo, button_video)
 
-    #await msg.reply("Bot for photo and video editing", parse_mode="html", reply_markup=markup)
+    # await msg.reply("Bot for photo and video editing", parse_mode="html", reply_markup=markup)
 
     await msg.reply("Bot for photo and video editing\n"
                     "Send photo with description 'puzzle (number of columns) to make puzzle")
@@ -70,7 +72,7 @@ async def handler_photo_message(msg):
                 else:
                     await msg.reply(error)
             else:
-                await msg.reply('Command "PUZZLE": Wrong parameters')
+                await msg.reply('Command "RESIZE": Wrong parameters')
         else:
             await msg.reply('Photo: Wrong command')
     else:
@@ -83,24 +85,56 @@ async def puzzle_photo1(msg):
         if msg.caption is not None:
             command = msg.caption.split()
             if command[0] == 'crop' and len(command) == 5:
-                if ad.is_integer(command[1]) and ad.is_integer(command[2]) \
-                        and ad.is_integer(command[3]) and ad.is_integer(command[4]):
+                if ad.is_integer(command[1]) and ad.is_integer(command[2]) and ad.is_integer(
+                        command[3]) and ad.is_integer(command[4]):
                     await msg.reply("Cropping")
+                    file_name, file_format = gf(msg.document.file_name)
+                    file_name = "crop_" + file_name + "_" + str(msg.from_id) \
+                                + '_' + str(msg.message_id) + '.' + file_format
+                    await msg.document.download(file_name)
+                    error = crop_photo(file_name, int(command[1]), int(command[2]), int(command[3]), int(command[4]))
+                    os.remove(file_name)
+                    file_name, file_format = gf(file_name)
+                    if error is None:
+                        result = file_name + '_result' + file_format
+                        await msg.reply_document(open(result, "rb"))
+                        os.remove(result)
+                    else:
+                        await msg.reply(error)
                 else:
                     await msg.reply('Command "CROP": Wrong parameters')
             elif command[0] == 'puzzle' and len(command) == 2:
                 if ad.is_integer(command[1]):
                     await msg.reply("Making puzzle")
-                    parse = list(msg.document.file_name.split('.'))
-                    name = "input_" + str(msg.from_id) + '_' + str(msg.message_id) + '.' + parse[-1]
-                    await msg.document.download(name)
-                    puzzle_photo(name, int(command[1]))
-                    os.remove(name)
-                    result = name[:-4:] + '_result.jpg'
+                    file_name, file_format = gf(msg.document.file_name)
+                    file_name = "puzzle_" + file_name + "_" + str(msg.from_id) \
+                                + '_' + str(msg.message_id) + '.' + file_format
+                    await msg.document.download(file_name)
+                    puzzle_photo(file_name, int(command[1]))
+                    os.remove(file_name)
+                    result = file_name + '_result' + file_format
                     await msg.reply_document(open(result, "rb"))
                     os.remove(result)
                 else:
                     await msg.reply('Command "PUZZLE": Wrong parameters')
+            elif command[0] == 'resize' and len(command) == 3:
+                if ad.is_integer(command[1]) and ad.is_integer(command[2]):
+                    await msg.reply("Resizing")
+                    file_name, file_format = gf(msg.document.file_name)
+                    file_name = "input_" + file_name + "_" + str(msg.from_id) + '_' \
+                                + str(msg.message_id) + '.' + file_format
+                    await msg.document.download(file_name)
+                    error = resize_photo(file_name, int(command[1]), int(command[2]))
+                    os.remove(file_name)
+                    file_name, file_format = gf(file_name)
+                    if error is None:
+                        result = file_name + '_result' + file_format
+                        await msg.reply_document(open(result, "rb"))
+                        os.remove(result)
+                    else:
+                        await msg.reply(error)
+                else:
+                    await msg.reply('Command "RESIZE": Wrong parameters')
             else:
                 await msg.reply('Photo: Wrong command')
         else:
