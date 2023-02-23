@@ -6,6 +6,7 @@ import bot_api.handlers.addion_functions as ad
 from bot_api.handlers.photo_handler import crop_photo_handler
 from bot_api.handlers.photo_handler import puzzle_photo_handler
 from bot_api.handlers.photo_handler import resize_photo_handler
+from bot_api.handlers.photo_handler import change_format_photo_handler
 
 from get_extension import get_format as gf
 
@@ -28,6 +29,8 @@ async def send_welcome(msg: types.Message):
 async def handler_photo_message(msg):
     if msg.caption is not None:
         command = msg.caption.split()
+        file_name = "input"
+        file_format = "jpg"
         if command[0] == 'crop' and len(command) == 5:
             if ad.is_integer(command[1]) and ad.is_integer(command[2]) and ad.is_integer(command[3]) and ad.is_integer(
                     command[4]):
@@ -44,6 +47,8 @@ async def handler_photo_message(msg):
                 await resize_photo_handler("input", ".jpg", msg, command, types.ContentType.PHOTO)
             else:
                 await msg.reply('Command "RESIZE": Wrong parameters')
+        elif command[0] == 'format' and len(command) == 2:
+            await change_format_photo_handler("input", ".jpg", msg, command, types.ContentType.PHOTO)
         else:
             await msg.reply('Photo: Wrong command')
     else:
@@ -72,6 +77,8 @@ async def puzzle_photo1(msg):
                     await resize_photo_handler(file_name, file_format, msg, command, types.ContentType.DOCUMENT)
                 else:
                     await msg.reply('Command "RESIZE": Wrong parameters')
+            elif command[0] == 'format' and len(command) == 2:
+                await change_format_photo_handler(file_name, file_format, msg, command, types.ContentType.DOCUMENT)
             else:
                 await msg.reply('Photo: Wrong command')
         else:
