@@ -11,7 +11,7 @@ def crop_photo(file_path: str, start_x: int, start_y: int, finish_x: int, finish
         img = Image.open(file_path)
         w, h = img.size
 
-        result_name = name + "_result" + format_file
+        result_name = "result_" + file_path
         if start_y >= finish_y or start_x >= finish_x or finish_y > h or finish_x > w:
             return "Wrong coordinates"
         img.crop((start_x, start_y, finish_x, finish_y))\

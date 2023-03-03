@@ -1,5 +1,5 @@
-from photo_manager.resize_photo import resize_photo as rsp
+from photo_manager.change_format_photo import convert_to_png as ctj
 
 if __name__ == '__main__':
-    print(rsp("result.jpg", 2000, 2000))
+    print(ctj('y10.bmp'))
 
