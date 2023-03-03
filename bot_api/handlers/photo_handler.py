@@ -30,7 +30,7 @@ async def crop_photo_handler(input_file_name, input_file_format, msg, command, c
     elif content_type == types.ContentType.DOCUMENT:
         await msg.document.download(file_name)
     error = crop_photo(file_name, int(command[1]), int(command[2]), int(command[3]), int(command[4]))
-    await end_photo_operation(file_name, error, msg)
+    await end_photo_operation(file_name, error, msg, input_file_format)
 
 
 async def puzzle_photo_handler(input_file_name, input_file_format, msg, command, content_type):
@@ -42,7 +42,7 @@ async def puzzle_photo_handler(input_file_name, input_file_format, msg, command,
     elif content_type == types.ContentType.DOCUMENT:
         await msg.document.download(file_name)
     error = puzzle_photo(file_name, int(command[1]))
-    await end_photo_operation(file_name, error, msg)
+    await end_photo_operation(file_name, error, msg, input_file_format)
 
 
 async def resize_photo_handler(input_file_name, input_file_format, msg, command, content_type):
@@ -54,7 +54,7 @@ async def resize_photo_handler(input_file_name, input_file_format, msg, command,
     elif content_type == types.ContentType.DOCUMENT:
         await msg.document.download(file_name)
     error = resize_photo(file_name, int(command[1]), int(command[2]))
-    await end_photo_operation(file_name, error, msg)
+    await end_photo_operation(file_name, error, msg, input_file_format)
 
 
 async def change_format_photo_handler(input_file_name, input_file_format, msg, command, content_type):
