@@ -32,7 +32,7 @@ def puzzle_photo(file_path, parts):
             for j in range(parts):
                 box = (int(i * part_w), int(j * part_h), int((i + 1) * part_w), int((j + 1) * part_h))
                 new_im.paste(table[i * parts + j], box)
-        result = file_path[:-4:] + "_result.jpg"
+        result = 'result_' + file_path[:-4:] + '.jpg'
         new_im.save(result)
     except:
-        return "Something go wrong while puzzling your photo"
+        return 'Something go wrong while puzzling your photo'
