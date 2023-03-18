@@ -1,5 +1,5 @@
-from photo_manager.change_format_photo import convert_to_png as ctj
+from video_processing.resize_video import resize_video_ffmpeg as rvf
 
 if __name__ == '__main__':
-    print(ctj('y10.bmp'))
+    print(rvf('Carpathians.avi', 800, 600))
 

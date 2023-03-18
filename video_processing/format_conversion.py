@@ -1,14 +1,16 @@
 from moviepy.editor import *
 import os
 
+from get_extension import get_format as gf
 
-def convert_avi_to_mp4_ffmpeg(avi_file_path, result_file_path):
-    # if os.path.exists(result_file_path):
-    #     os.remove(result_file_path)
+
+def convert_avi_to_mp4_ffmpeg(avi_file_path):
     try:
-        os.popen("ffmpeg -i {0} -c:v mpeg4 -preset fast -crf 19 {1}".format(avi_file_path, result_file_path))
+        file_name, _ = gf(avi_file_path)
+        os.popen('ffmpeg -i {0} -c:v mpeg4 -preset fast -crf 19 {1}'
+                 .format(avi_file_path, 'result_' + file_name + '.mp4'))
     except FileNotFoundError:
-        return "Missing file"
+        return 'Missing file'
 
 
 def convert_avi_to_mp4_moviepy(avi_file_path, result_file_path):

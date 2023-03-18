@@ -11,4 +11,5 @@ class MediaManagerBot:
         self.is_crop_menu = False
 
 
-dp = Dispatcher(Bot(token=config.BOT_TOKEN, parse_mode="HTML"))
+bot = Bot(token=config.BOT_TOKEN, parse_mode="HTML")
+dp = Dispatcher(bot)
