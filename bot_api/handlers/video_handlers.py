@@ -1,8 +1,6 @@
-import asyncio
-
 from aiogram import types
 
-from video_processing.resize_video import resize_video_ffmpeg
+from video_processing.resize_video import resize_video
 
 from bot_api.dispatcher import bot
 
@@ -20,11 +18,5 @@ async def resize_video_handler(input_file_name, input_file_format, msg, command,
     elif content_type == types.ContentType.DOCUMENT:
         await msg.document.download(file_name)
 
-    ffmpeg_cmd = """ffmpeg -i {0} -vf scale={1}:{2} {3}""".format(file_name, int(command[1]), int(command[2]), "result_" + file_name)
-    proc = await asyncio.create_subprocess_shell(
-        ffmpeg_cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
-    )
-    await proc.communicate()
+    await resize_video(file_name, int(command[1]), int(command[2]))
     await send_and_delete(file_name, None, msg, input_file_format)
