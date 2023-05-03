@@ -1,16 +1,14 @@
 from aiogram import types
 
 from video_processing.resize_video import resize_video
+from video_processing.subvideo import subvideo
 
 from bot_api.dispatcher import bot
 
 from bot_api.handlers.cleaning_cache import send_and_delete
 
 
-async def resize_video_handler(input_file_name, input_file_format, msg, command, content_type):
-    await msg.reply('Resizing')
-    file_name = 'resize_' + input_file_name + "_" + str(msg.from_id) + '_' \
-                + str(msg.message_id) + input_file_format
+async def download_video(content_type, msg, file_name):
     if content_type == types.ContentType.VIDEO:
         file = await bot.get_file(msg.video.file_id)
         file_path = file.file_path
@@ -18,5 +16,22 @@ async def resize_video_handler(input_file_name, input_file_format, msg, command,
     elif content_type == types.ContentType.DOCUMENT:
         await msg.document.download(file_name)
 
+
+async def resize_video_handler(input_file_name, input_file_format, msg, command, content_type):
+    await msg.reply('Resizing')
+    file_name = 'resize_' + input_file_name + "_" + str(msg.from_id) + '_' \
+                + str(msg.message_id) + input_file_format
+    await download_video(content_type, msg, file_name)
+
     await resize_video(file_name, int(command[1]), int(command[2]))
+    await send_and_delete(file_name, None, msg, input_file_format)
+
+
+async def sub_video_handler(input_file_name, input_file_format, msg, command, content_type):
+    await msg.reply('Making video')
+    file_name = 'subvideo_' + input_file_name + "_" + str(msg.from_id) + '_' \
+                + str(msg.message_id) + input_file_format
+    await download_video(content_type, msg, file_name)
+
+    await subvideo(command, file_name)
     await send_and_delete(file_name, None, msg, input_file_format)

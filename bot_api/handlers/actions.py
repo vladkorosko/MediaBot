@@ -9,6 +9,7 @@ from bot_api.handlers.photo_handlers import resize_photo_handler
 from bot_api.handlers.photo_handlers import change_format_photo_handler
 
 from bot_api.handlers.video_handlers import resize_video_handler
+from bot_api.handlers.video_handlers import sub_video_handler
 
 from get_extension import get_format as gf
 
@@ -142,6 +143,11 @@ async def handle_video_message(msg):
                 await resize_video_handler(file_name, file_format, msg, command, types.ContentType.VIDEO)
             else:
                 await msg.reply('Command "RESIZE": Wrong parameters')
+        elif command[0] == 'subvideo' and len(command) == 3:
+            if ad.is_integer(command[1]) and ad.is_integer(command[2]):
+                await sub_video_handler(file_name, file_format, msg, command, types.ContentType.VIDEO)
+            else:
+                await msg.reply('Command "SUBVIDEO": Wrong parameters')
         elif command[0] == 'format' and len(command) == 2:
             #await change_format_photo_handler('input', '.jpg', msg, command, types.ContentType.PHOTO)
             pass

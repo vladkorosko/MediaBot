@@ -1,10 +1,10 @@
 import asyncio
 
 
-async def resize_video(file_name: str, width: int, height: int):
-    ffmpeg_cmd = """ffmpeg -i {0} -vf scale={1}:{2} {3}""".format(file_name, width, height,                                                           "result_" + file_name)
+async def subvideo(command, file_name):
+    ffmpeg_command = f'ffmpeg -ss {int(command[2])} -i {file_name} -to {int(command[2])} -c:v copy -c:a copy {"result_" + file_name}'
     proc = await asyncio.create_subprocess_shell(
-        ffmpeg_cmd,
+        ffmpeg_command,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE
     )
