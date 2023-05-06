@@ -1,7 +1,10 @@
+import os
+
 from aiogram import types
 
 from video_processing.resize_video import resize_video
 from video_processing.subvideo import subvideo
+from video_processing.format_conversion import convert_to_mp4, convert_to_webm, convert_to_mov
 
 from bot_api.dispatcher import bot
 
@@ -23,8 +26,8 @@ async def resize_video_handler(input_file_name, input_file_format, msg, command,
                 + str(msg.message_id) + input_file_format
     await download_video(content_type, msg, file_name)
 
-    await resize_video(file_name, int(command[1]), int(command[2]))
-    await send_and_delete(file_name, None, msg, input_file_format)
+    errors = await resize_video(file_name, int(command[1]), int(command[2]))
+    await send_and_delete(file_name, errors, msg, input_file_format)
 
 
 async def sub_video_handler(input_file_name, input_file_format, msg, command, content_type):
@@ -33,5 +36,25 @@ async def sub_video_handler(input_file_name, input_file_format, msg, command, co
                 + str(msg.message_id) + input_file_format
     await download_video(content_type, msg, file_name)
 
-    await subvideo(command, file_name)
-    await send_and_delete(file_name, None, msg, input_file_format)
+    errors = await subvideo(command, file_name)
+    await send_and_delete(file_name, errors, msg, input_file_format)
+
+
+async def convert_video_handler(input_file_name, input_file_format, msg, command, content_type):
+    await msg.reply('Changing format')
+    file_name = 'format_' + input_file_name + "_" + str(msg.from_id) + '_' \
+                + str(msg.message_id) + input_file_format
+    await download_video(content_type, msg, file_name)
+
+    if command[1] in ['mp4', '.mp4']:
+        errors = await convert_to_mp4(file_name)
+        await send_and_delete(file_name, errors, msg, '.mp4')
+    elif command[1] in ['mov', '.mov']:
+        errors = await convert_to_mov(file_name)
+        await send_and_delete(file_name, errors, msg, '.mov')
+    elif command[1] in ['webm', '.webm']:
+        errors = await convert_to_webm(file_name)
+        await send_and_delete(file_name, errors, msg, '.webm')
+    else:
+        os.remove(file_name)
+        await msg.reply('Unsupported format: ' + command[1])
