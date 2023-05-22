@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher, types
 
-import config
+import bot_api.config as config
 
 
 class MediaManagerBot:

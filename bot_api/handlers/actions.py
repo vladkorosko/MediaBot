@@ -152,9 +152,9 @@ async def help_function(msg):
                         parse_mode='html')
     elif msg.text in ['subvideo', 'Subvideo']:
         await msg.reply('Send video and in description write command \n'
-                        '<b><i>subvideo start_second finish_second</i></b> - '
+                        '<b><i>subvideo start_second duration</i></b> - '
                         'where:\n<b><i>start_second</i></b> - start second of subvideo;\n'
-                        '<b><i>finish_second</i></b> - finish second of subvideo.\n'
+                        '<b><i>duration</i></b> - duration of subvideo.\n'
                         'Example - "subvideo 5 10"',
                         parse_mode='html')
     else:
